@@ -36,6 +36,11 @@ http://localhost:4173
 - `data-testid="psl-select"`
 - `data-testid="submit-intake-button"`
 - `data-testid="person-records-body"`
+- `data-testid="person-detail-panel"`
+- `data-testid="workflow-status-banner"`
+- `data-testid="workflow-status-value"`
+- `data-testid="detail-first-name"`
+- `data-testid="back-to-intake-button"`
 - `data-testid="nav-tasks"`
 - `data-testid="task-search"`
 - `data-testid="save-settings-button"`
@@ -47,6 +52,7 @@ http://localhost:4173
 - Submit invalid credentials and expect the alert.
 - Log in successfully and assert the home heading.
 - Navigate to Intake, submit a Person record, and assert the table row appears.
+- Click a Person record row and assert the read-only detail view and workflow status.
 - Click Refresh data and expect counters plus a toast.
 - Navigate to Tasks, search for a missing task, and assert the empty state.
 - Complete a task and assert the card receives the `done` class.

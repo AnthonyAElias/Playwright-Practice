@@ -151,6 +151,7 @@ function hydrateHome() {
   const intakeForm = document.querySelector("[data-testid='intake-form']");
   const personRecordsBody = document.querySelector("[data-testid='person-records-body']");
   const personEmptyState = document.querySelector("[data-testid='person-empty-state']");
+  const backToIntakeButton = document.querySelector("[data-testid='back-to-intake-button']");
 
   const showToast = (message) => {
     toast.textContent = message;
@@ -168,6 +169,18 @@ function hydrateHome() {
     panels.forEach((panel) => {
       panel.classList.toggle("active", panel.dataset.viewPanel === view);
     });
+  };
+
+  const showPersonDetail = (person) => {
+    document.querySelector("[data-testid='person-detail-title']").textContent = `${person.firstName} ${person.lastName}`;
+    document.querySelector("[data-testid='detail-first-name']").textContent = person.firstName;
+    document.querySelector("[data-testid='detail-last-name']").textContent = person.lastName;
+    document.querySelector("[data-testid='detail-email']").textContent = person.email;
+    document.querySelector("[data-testid='detail-address']").textContent = person.address;
+    document.querySelector("[data-testid='detail-skip-applicant-intake']").textContent = person.skipApplicantIntake;
+    document.querySelector("[data-testid='detail-psl']").textContent = person.psl;
+    document.querySelector("[data-testid='workflow-status-value']").textContent = "Applicant Intake";
+    setView("person-detail");
   };
 
   const renderTasks = () => {
@@ -225,7 +238,11 @@ function hydrateHome() {
     personRecordsBody.replaceChildren(
       ...personRecords.map((person, index) => {
         const row = document.createElement("tr");
+        row.className = "clickable-row";
         row.dataset.testid = `person-record-${index + 1}`;
+        row.tabIndex = 0;
+        row.setAttribute("role", "button");
+        row.setAttribute("aria-label", `Open Person record for ${person.firstName} ${person.lastName}`);
 
         [
           person.firstName,
@@ -238,6 +255,17 @@ function hydrateHome() {
           const cell = document.createElement("td");
           cell.textContent = value;
           row.append(cell);
+        });
+
+        row.addEventListener("click", () => {
+          showPersonDetail(person);
+        });
+
+        row.addEventListener("keydown", (event) => {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            showPersonDetail(person);
+          }
         });
 
         return row;
@@ -267,6 +295,10 @@ function hydrateHome() {
   });
 
   taskSearch.addEventListener("input", renderTasks);
+
+  backToIntakeButton.addEventListener("click", () => {
+    setView("intake");
+  });
 
   intakeForm.addEventListener("submit", (event) => {
     event.preventDefault();

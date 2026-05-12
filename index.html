@@ -234,6 +234,50 @@
             </div>
           </section>
 
+          <section class="view" data-view-panel="person-detail" data-testid="person-detail-panel" aria-labelledby="person-detail-title">
+            <div class="section-heading">
+              <div>
+                <h2 id="person-detail-title" data-testid="person-detail-title">Person Detail</h2>
+                <p>Read-only view of the selected Person record.</p>
+              </div>
+              <button class="secondary-button" type="button" data-testid="back-to-intake-button">Back to Intake</button>
+            </div>
+
+            <div class="workflow-banner" data-testid="workflow-status-banner">
+              <span>Workflow Status</span>
+              <strong data-testid="workflow-status-value">Applicant Intake</strong>
+            </div>
+
+            <section class="detail-card" aria-label="Person information" data-testid="person-readonly-card">
+              <dl class="detail-grid">
+                <div>
+                  <dt>First Name</dt>
+                  <dd data-testid="detail-first-name"></dd>
+                </div>
+                <div>
+                  <dt>Last Name</dt>
+                  <dd data-testid="detail-last-name"></dd>
+                </div>
+                <div>
+                  <dt>Email</dt>
+                  <dd data-testid="detail-email"></dd>
+                </div>
+                <div>
+                  <dt>Address</dt>
+                  <dd data-testid="detail-address"></dd>
+                </div>
+                <div>
+                  <dt>Skip Applicant Intake</dt>
+                  <dd data-testid="detail-skip-applicant-intake"></dd>
+                </div>
+                <div>
+                  <dt>PSL</dt>
+                  <dd data-testid="detail-psl"></dd>
+                </div>
+              </dl>
+            </section>
+          </section>
+
           <section class="view" data-view-panel="tasks" data-testid="tasks-panel" aria-labelledby="tasks-title">
             <div class="section-heading">
               <div>
