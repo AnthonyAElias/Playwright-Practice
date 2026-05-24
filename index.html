@@ -172,17 +172,17 @@
               <div class="form-grid">
                 <label class="field-group" for="first-name">
                   <span>First Name</span>
-                  <input id="first-name" name="firstName" type="text" data-testid="first-name-input" required />
+                  <input id="first-name" name="firstName" type="text" data-testid="first-name-input" required aria-required="true" />
                 </label>
 
                 <label class="field-group" for="last-name">
                   <span>Last Name</span>
-                  <input id="last-name" name="lastName" type="text" data-testid="last-name-input" required />
+                  <input id="last-name" name="lastName" type="text" data-testid="last-name-input" required aria-required="true" />
                 </label>
 
                 <label class="field-group" for="intake-email">
                   <span>Email</span>
-                  <input id="intake-email" name="email" type="text" inputmode="email" data-testid="intake-email-input" required />
+                  <input id="intake-email" name="email" type="text" inputmode="email" data-testid="intake-email-input" required aria-required="true" />
                 </label>
 
                 <label class="field-group" for="address">
@@ -193,10 +193,40 @@
                 <label class="field-group" for="psl-select">
                   <span>PSL</span>
                   <select id="psl-select" name="psl" data-testid="psl-select">
+                    <option value=""></option>
                     <option value="T1">T1</option>
                     <option value="T2">T2</option>
                     <option value="T3">T3</option>
                   </select>
+                </label>
+
+                <label class="field-group" for="ssn">
+                  <span>SSN</span>
+                  <input
+                    id="ssn"
+                    name="ssn"
+                    type="text"
+                    inputmode="numeric"
+                    autocomplete="off"
+                    pattern="[0-9]{0,9}"
+                    placeholder="XXX-XX-XXXX"
+                    data-testid="ssn-input"
+                  />
+                </label>
+
+                <label class="field-group" for="applicant-type-select">
+                  <span>Applicant Type</span>
+                  <select id="applicant-type-select" name="applicantType" data-testid="applicant-type-select">
+                    <option value="Federal">Federal</option>
+                    <option value="Contractor">Contractor</option>
+                    <option value="Intern">Intern</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </label>
+
+                <label class="field-group" for="anticipated-start-date">
+                  <span>Anticipated Start Date</span>
+                  <input id="anticipated-start-date" name="anticipatedStartDate" type="date" data-testid="anticipated-start-date-input" />
                 </label>
               </div>
 
@@ -223,9 +253,13 @@
                     <th scope="col">First Name</th>
                     <th scope="col">Last Name</th>
                     <th scope="col">Email</th>
+                    <th scope="col">SSN</th>
                     <th scope="col">Address</th>
+                    <th scope="col">Anticipated Start Date</th>
+                    <th scope="col">Applicant Type</th>
                     <th scope="col">Skip Applicant Intake</th>
                     <th scope="col">PSL</th>
+                    <th scope="col">Workflow Status</th>
                   </tr>
                 </thead>
                 <tbody data-testid="person-records-body"></tbody>
@@ -248,6 +282,11 @@
               <strong data-testid="workflow-status-value">Applicant Intake</strong>
             </div>
 
+            <div class="workflow-actions" data-testid="workflow-actions">
+              <button class="primary-button" type="button" data-testid="approve-person-button">Approve</button>
+              <button class="danger-button" type="button" data-testid="disapprove-person-button">Disapprove</button>
+            </div>
+
             <section class="detail-card" aria-label="Person information" data-testid="person-readonly-card">
               <dl class="detail-grid">
                 <div>
@@ -263,8 +302,20 @@
                   <dd data-testid="detail-email"></dd>
                 </div>
                 <div>
+                  <dt>SSN</dt>
+                  <dd data-testid="detail-ssn"></dd>
+                </div>
+                <div>
                   <dt>Address</dt>
                   <dd data-testid="detail-address"></dd>
+                </div>
+                <div>
+                  <dt>Anticipated Start Date</dt>
+                  <dd data-testid="detail-anticipated-start-date"></dd>
+                </div>
+                <div>
+                  <dt>Applicant Type</dt>
+                  <dd data-testid="detail-applicant-type"></dd>
                 </div>
                 <div>
                   <dt>Skip Applicant Intake</dt>

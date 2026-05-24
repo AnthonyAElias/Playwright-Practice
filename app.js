@@ -47,6 +47,24 @@ function savePersonRecords(records) {
   localStorage.setItem(PERSON_RECORDS_KEY, JSON.stringify(records));
 }
 
+function getWorkflowStatus(person) {
+  if (person.workflowStatus) {
+    return person.workflowStatus;
+  }
+
+  return person.skipApplicantIntake === "Yes" ? "Record Checks" : "Applicant Intake";
+}
+
+function maskSsn(value) {
+  const digits = String(value || "").replace(/\D/g, "");
+
+  if (!digits) {
+    return "";
+  }
+
+  return `XXX-XX-${digits.slice(-4).padStart(4, "X")}`;
+}
+
 function render() {
   const isLoggedIn = localStorage.getItem(SESSION_KEY) === "active";
   app.replaceChildren((isLoggedIn ? homeTemplate : loginTemplate).content.cloneNode(true));
@@ -152,6 +170,10 @@ function hydrateHome() {
   const personRecordsBody = document.querySelector("[data-testid='person-records-body']");
   const personEmptyState = document.querySelector("[data-testid='person-empty-state']");
   const backToIntakeButton = document.querySelector("[data-testid='back-to-intake-button']");
+  const approvePersonButton = document.querySelector("[data-testid='approve-person-button']");
+  const disapprovePersonButton = document.querySelector("[data-testid='disapprove-person-button']");
+  const ssnInput = document.querySelector("[data-testid='ssn-input']");
+  let selectedPersonIndex = null;
 
   const showToast = (message) => {
     toast.textContent = message;
@@ -171,16 +193,40 @@ function hydrateHome() {
     });
   };
 
-  const showPersonDetail = (person) => {
+  const showPersonDetail = (person, index) => {
+    selectedPersonIndex = index;
     document.querySelector("[data-testid='person-detail-title']").textContent = `${person.firstName} ${person.lastName}`;
     document.querySelector("[data-testid='detail-first-name']").textContent = person.firstName;
     document.querySelector("[data-testid='detail-last-name']").textContent = person.lastName;
     document.querySelector("[data-testid='detail-email']").textContent = person.email;
+    document.querySelector("[data-testid='detail-ssn']").textContent = person.ssn || "Not provided";
     document.querySelector("[data-testid='detail-address']").textContent = person.address;
+    document.querySelector("[data-testid='detail-anticipated-start-date']").textContent =
+      person.anticipatedStartDate || "Not provided";
+    document.querySelector("[data-testid='detail-applicant-type']").textContent = person.applicantType || "Not provided";
     document.querySelector("[data-testid='detail-skip-applicant-intake']").textContent = person.skipApplicantIntake;
-    document.querySelector("[data-testid='detail-psl']").textContent = person.psl;
-    document.querySelector("[data-testid='workflow-status-value']").textContent = "Applicant Intake";
+    document.querySelector("[data-testid='detail-psl']").textContent = person.psl || "Not provided";
+    document.querySelector("[data-testid='workflow-status-value']").textContent = getWorkflowStatus(person);
     setView("person-detail");
+  };
+
+  const updateSelectedPersonWorkflowStatus = (workflowStatus) => {
+    if (selectedPersonIndex === null) {
+      return;
+    }
+
+    const personRecords = loadPersonRecords();
+    const selectedPerson = personRecords[selectedPersonIndex];
+
+    if (!selectedPerson) {
+      return;
+    }
+
+    selectedPerson.workflowStatus = workflowStatus;
+    savePersonRecords(personRecords);
+    renderPersonRecords();
+    showPersonDetail(selectedPerson, selectedPersonIndex);
+    showToast(`Workflow status updated to ${workflowStatus}.`);
   };
 
   const renderTasks = () => {
@@ -248,9 +294,13 @@ function hydrateHome() {
           person.firstName,
           person.lastName,
           person.email,
+          person.ssn || "Not provided",
           person.address,
+          person.anticipatedStartDate || "Not provided",
+          person.applicantType || "Not provided",
           person.skipApplicantIntake,
-          person.psl,
+          person.psl || "Not provided",
+          getWorkflowStatus(person),
         ].forEach((value) => {
           const cell = document.createElement("td");
           cell.textContent = value;
@@ -258,13 +308,13 @@ function hydrateHome() {
         });
 
         row.addEventListener("click", () => {
-          showPersonDetail(person);
+          showPersonDetail(person, index);
         });
 
         row.addEventListener("keydown", (event) => {
           if (event.key === "Enter" || event.key === " ") {
             event.preventDefault();
-            showPersonDetail(person);
+            showPersonDetail(person, index);
           }
         });
 
@@ -296,20 +346,41 @@ function hydrateHome() {
 
   taskSearch.addEventListener("input", renderTasks);
 
+  ssnInput.addEventListener("input", () => {
+    ssnInput.value = ssnInput.value.replace(/\D/g, "").slice(0, 9);
+  });
+
   backToIntakeButton.addEventListener("click", () => {
     setView("intake");
   });
 
+  approvePersonButton.addEventListener("click", () => {
+    updateSelectedPersonWorkflowStatus("Intake Review");
+  });
+
+  disapprovePersonButton.addEventListener("click", () => {
+    updateSelectedPersonWorkflowStatus("Inactive");
+  });
+
   intakeForm.addEventListener("submit", (event) => {
     event.preventDefault();
+
+    if (!intakeForm.reportValidity()) {
+      return;
+    }
+
     const formData = new FormData(intakeForm);
     const personRecord = {
       firstName: String(formData.get("firstName") || "").trim(),
       lastName: String(formData.get("lastName") || "").trim(),
       email: String(formData.get("email") || "").trim(),
+      ssn: maskSsn(formData.get("ssn")),
       address: String(formData.get("address") || "").trim(),
+      anticipatedStartDate: String(formData.get("anticipatedStartDate") || "").trim(),
+      applicantType: String(formData.get("applicantType") || "Federal"),
       skipApplicantIntake: String(formData.get("skipApplicantIntake") || "No"),
-      psl: String(formData.get("psl") || "T1"),
+      psl: String(formData.get("psl") || ""),
+      workflowStatus: String(formData.get("skipApplicantIntake") || "No") === "Yes" ? "Record Checks" : "Applicant Intake",
     };
     const personRecords = loadPersonRecords();
 

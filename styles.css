@@ -194,7 +194,8 @@ h2 {
 
 .primary-button,
 .secondary-button,
-.ghost-button {
+.ghost-button,
+.danger-button {
   min-height: 44px;
   border: 0;
   border-radius: 8px;
@@ -221,6 +222,15 @@ h2 {
   border: 1px solid var(--line);
   background: white;
   color: var(--ink);
+}
+
+.danger-button {
+  background: var(--red);
+  color: white;
+}
+
+.danger-button:hover {
+  background: #9f302b;
 }
 
 .ghost-button {
@@ -566,6 +576,12 @@ th {
   padding: 8px 12px;
 }
 
+.workflow-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
 .detail-card {
   padding: 18px;
 }
@@ -667,6 +683,11 @@ th {
   .workflow-banner {
     align-items: flex-start;
     flex-direction: column;
+  }
+
+  .workflow-actions {
+    flex-direction: column;
+    width: 100%;
   }
 }
 

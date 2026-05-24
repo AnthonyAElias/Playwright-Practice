@@ -31,7 +31,10 @@ http://localhost:4173
 - `data-testid="first-name-input"`
 - `data-testid="last-name-input"`
 - `data-testid="intake-email-input"`
+- `data-testid="ssn-input"`
 - `data-testid="address-input"`
+- `data-testid="anticipated-start-date-input"`
+- `data-testid="applicant-type-select"`
 - `data-testid="skip-applicant-intake-yes"`
 - `data-testid="psl-select"`
 - `data-testid="submit-intake-button"`
@@ -39,7 +42,12 @@ http://localhost:4173
 - `data-testid="person-detail-panel"`
 - `data-testid="workflow-status-banner"`
 - `data-testid="workflow-status-value"`
+- `data-testid="approve-person-button"`
+- `data-testid="disapprove-person-button"`
 - `data-testid="detail-first-name"`
+- `data-testid="detail-ssn"`
+- `data-testid="detail-anticipated-start-date"`
+- `data-testid="detail-applicant-type"`
 - `data-testid="back-to-intake-button"`
 - `data-testid="nav-tasks"`
 - `data-testid="task-search"`
@@ -53,6 +61,10 @@ http://localhost:4173
 - Log in successfully and assert the home heading.
 - Navigate to Intake, submit a Person record, and assert the table row appears.
 - Click a Person record row and assert the read-only detail view and workflow status.
+- Submit Intake with `Skip Applicant Intake` set to `Yes` and assert the workflow status is `Record Checks`.
+- Submit Intake with an SSN and assert only the masked value is shown, such as `XXX-XX-5555`.
+- Click Approve on a Person detail page and assert the workflow status updates to `Intake Review`.
+- Click Disapprove on a Person detail page and assert the workflow status updates to `Inactive`.
 - Click Refresh data and expect counters plus a toast.
 - Navigate to Tasks, search for a missing task, and assert the empty state.
 - Complete a task and assert the card receives the `done` class.
